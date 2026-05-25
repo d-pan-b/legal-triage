@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-size: clamp(13px, 1.1vw, 17px);
+  }
+
+  :root {
+    --brand: #f26522;
+    --brand-dark: #c44e10;
+    --brand-light: #fef0e8;
+    --brand-mid: #fad5be;
+    --portal-surface: #f5f5f3;
+    --portal-nav: #1a1a1a;
+    --portal-ribbon: #111111;
+    --portal-border: #333333;
+    --portal-muted: #666666;
+    --portal-stat-green: #9fe1cb;
+    --portal-stat-warn: #fac775;
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f5f5f3;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #666666;
+    --color-text-muted: #888888;
+    --color-text-faint: #aaaaaa;
+    --color-text-dim: #444444;
+    --color-footer-text: #555555;
+    --color-nav-bg: #1a1a1a;
+    --color-border-tertiary: #e5e5e5;
+    --color-border-secondary: #d4d4d4;
+    --color-success: #166534;
+    --color-success-bg: #f0fdf4;
+    --color-success-bg-alt: #e8f5e9;
+    --color-warning: #b45309;
+    --color-warning-bg: #fff8e1;
+    --color-warning-strong: #e65100;
+    --color-warn-border: #fde68a;
+    --color-warn-text: #92400e;
+    --color-danger: #991b1b;
+    --color-danger-bg: #fef2f2;
+    --color-danger-text-dark: #7f1d1d;
+    --color-danger-border: #dc2626;
+    --color-civil-bg: #eef2ff;
+    --color-civil-text: #3730a3;
+    --color-dmca-bg: #fef9c3;
+    --color-dmca-text: #854d0e;
+    --color-fisa-bg: #fdf2f8;
+    --color-fisa-text: #9d174d;
+    --color-junior-bg: #eff6ff;
+    --color-junior-text: #1d4ed8;
+  }
+
+  body {
+    background-color: var(--portal-surface);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
