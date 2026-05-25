@@ -94,6 +94,8 @@ function flagTitle(flag) {
   return flag.length > 80 ? `${flag.slice(0, 80)}...` : flag;
 }
 
+const FLAG_SEVERITY_RANK = { Critical: 0, High: 1, Medium: 2 };
+
 function flagSeverity(flag) {
   const f = flag.toLowerCase();
   if (
@@ -102,12 +104,16 @@ function flagSeverity(flag) {
     f.includes('fourth amendment') ||
     f.includes('particularity')
   ) {
-    return { label: 'Critical', className: 'bg-danger-light text-danger' };
+    return { label: 'Critical', rank: FLAG_SEVERITY_RANK.Critical, className: 'bg-danger-light text-danger' };
   }
   if (f.includes('jurisdictional') || f.includes('nexus') || f.includes('overreach')) {
-    return { label: 'High', className: 'bg-warning-light text-warning' };
+    return { label: 'High', rank: FLAG_SEVERITY_RANK.High, className: 'bg-warning-light text-warning' };
   }
-  return { label: 'Medium', className: 'bg-dmca-light text-dmca' };
+  return { label: 'Medium', rank: FLAG_SEVERITY_RANK.Medium, className: 'bg-dmca-light text-dmca' };
+}
+
+function sortRedFlagsBySeverity(flags) {
+  return [...flags].sort((a, b) => flagSeverity(a).rank - flagSeverity(b).rank);
 }
 
 function isSectionHeader(line) {
@@ -184,7 +190,11 @@ export default function ResultsPanel({ documentText, triage, onReset, fileName =
     generatedAt: new Date().toLocaleString(),
   }));
 
-  const redFlags = Array.isArray(triage.red_flags) ? triage.red_flags : [];
+  const redFlags = useMemo(
+    () =>
+      sortRedFlagsBySeverity(Array.isArray(triage.red_flags) ? triage.red_flags : []),
+    [triage.red_flags]
+  );
   const routing = triage.recommended_routing || '';
   const { label: primaryLabel, Icon: PrimaryIcon } = primaryAction(routing);
   const docLines = useMemo(() => formatDocumentLines(documentText), [documentText]);
@@ -227,10 +237,10 @@ export default function ResultsPanel({ documentText, triage, onReset, fileName =
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
       <ResultsNavBar />
 
-      <div className="grid min-h-0 flex-1 grid-cols-1 overflow-hidden lg:h-[calc(100vh-3rem-2.5rem)] lg:grid-cols-2">
+      <div className="grid min-h-0 flex-1 grid-rows-2 overflow-hidden lg:grid-cols-2 lg:grid-rows-1">
         {/* Left pane — document */}
-        <section className="flex min-h-[40vh] flex-col border-b border-line bg-surface-primary lg:min-h-0 lg:border-b-0 lg:border-r">
-          <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-line bg-surface-primary px-4 py-3 md:px-5">
+        <section className="flex min-h-0 flex-col overflow-hidden border-b border-line bg-surface-primary lg:border-b-0 lg:border-r">
+          <div className="flex shrink-0 items-center justify-between border-b border-line bg-surface-primary px-4 py-3 md:px-5">
             <div>
               <h2 className="text-sm font-medium text-ink-primary">Original document</h2>
               <p className="mt-0.5 text-xs text-ink-secondary">{metaParts.join(' · ')}</p>
@@ -241,7 +251,7 @@ export default function ResultsPanel({ documentText, triage, onReset, fileName =
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-4 md:p-5">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 md:p-5">
             <div
               className="text-xs leading-relaxed text-ink-secondary md:text-sm"
               style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
@@ -274,7 +284,7 @@ export default function ResultsPanel({ documentText, triage, onReset, fileName =
         </section>
 
         {/* Right pane — triage */}
-        <section className="flex min-h-[40vh] flex-col overflow-y-auto bg-surface-secondary lg:min-h-0">
+        <section className="flex min-h-0 flex-col overflow-hidden bg-surface-secondary">
           {/* Verdict bar */}
           <div className="shrink-0 border-b border-line bg-surface-primary px-4 py-4 md:px-5">
             <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -334,6 +344,7 @@ export default function ResultsPanel({ documentText, triage, onReset, fileName =
             </div>
           )}
 
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
           {/* Fields grid */}
           <div className="grid grid-cols-1 gap-2 p-3 sm:grid-cols-2 md:gap-3 md:p-4">
             <FieldCard
@@ -388,11 +399,11 @@ export default function ResultsPanel({ documentText, triage, onReset, fileName =
               </div>
             </div>
           ) : (
-            redFlags.map((flag, i) => {
+            redFlags.map((flag) => {
               const severity = flagSeverity(flag);
               return (
                 <div
-                  key={i}
+                  key={`${severity.label}-${flag}`}
                   className="mx-3 mb-2 rounded-r-lg border border-line border-l-[3px] border-l-danger-border bg-surface-primary p-3 last:mb-0 md:mx-4 md:p-4"
                 >
                   <div className="mb-2 flex items-start justify-between gap-2">
@@ -417,6 +428,7 @@ export default function ResultsPanel({ documentText, triage, onReset, fileName =
           )}
 
           <div className="h-4 shrink-0 md:h-6" />
+          </div>
         </section>
       </div>
 

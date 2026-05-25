@@ -161,7 +161,11 @@ export default function App() {
   const isResults = appState === STATES.RESULTS && triage;
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div
+      className={
+        isResults ? 'flex h-screen flex-col overflow-hidden' : 'flex min-h-screen flex-col'
+      }
+    >
       {!isResults && <NavBar />}
       {appState === STATES.INPUT && <MetricsRibbon />}
 
