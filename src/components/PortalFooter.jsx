@@ -1,10 +1,11 @@
-import { ShieldCheck } from 'lucide-react';
-
 export default function PortalFooter() {
   return (
-    <footer className="flex items-center gap-4 bg-nav px-4 py-3 md:px-6">
-      <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-portal-muted" strokeWidth={1.75} />
-      <p className="text-xs text-ink-footer">
+    <footer className="flex h-10 shrink-0 items-center gap-3 border-t border-nav-border bg-nav-bg px-5">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" className="shrink-0 opacity-40">
+        <path d="M8 2L3 5v4c0 3 2.5 5 5 5s5-2 5-5V5L8 2z" stroke="var(--nav-ink-1)" strokeWidth="1.5" strokeLinejoin="round" />
+        <path d="M6 8l1.5 1.5L10 6" stroke="var(--nav-ink-1)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      <p className="text-[11px] text-nav-ink2">
         Nexus · Confidential demo · Not legal advice · Powered by Claude AI
       </p>
     </footer>

@@ -1,36 +1,37 @@
-import { Brain, FileSearch, Route } from 'lucide-react';
-
 const STEPS = [
   {
-    icon: FileSearch,
-    title: '1. Upload document',
-    body: 'PDF, DOCX or TXT — up to 50MB. Full text extracted automatically.',
+    num: '01',
+    title: 'Upload or paste',
+    body: 'PDF, DOCX, or plain text. Max 20 MB. Document stays on your network.',
   },
   {
-    icon: Brain,
-    title: '2. AI analyses',
-    body: 'Classifies type, extracts key fields, flags red flags and urgency.',
+    num: '02',
+    title: 'Fields extracted by AI',
+    body: 'Extracts legal basis, authority, data scope, deadline, and risk flags for reviewer confirmation.',
   },
   {
-    icon: Route,
-    title: '3. Routed instantly',
-    body: 'Structured output with routing recommendation in under 30 seconds.',
+    num: '03',
+    title: 'Reviewer confirms routing',
+    body: 'Confirm, override, or escalate the suggested routing. Every decision is logged to the audit trail.',
   },
 ];
 
 export default function HowItWorks() {
   return (
-    <div className="mt-3.5 grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-      {STEPS.map((step) => {
-        const Icon = step.icon;
-        return (
-          <div key={step.title} className="rounded-lg border border-line bg-surface-primary p-3.5 md:p-4">
-            <Icon className="h-5 w-5 text-brand" strokeWidth={1.75} />
-            <h3 className="mt-2 text-sm font-medium text-ink-primary">{step.title}</h3>
-            <p className="mt-1 text-xs leading-relaxed text-ink-muted md:text-sm">{step.body}</p>
+    <div className="mt-4 grid grid-cols-1 overflow-hidden rounded-xl border border-border bg-surface shadow-sm sm:grid-cols-3">
+      {STEPS.map((step, i) => (
+        <div
+          key={step.num}
+          className={`p-5 ${i < STEPS.length - 1 ? 'border-b border-border-faint sm:border-b-0 sm:border-r' : ''}`}
+        >
+          <div className="mb-2 flex items-center gap-1.5 font-mono text-[10px] font-medium text-ink-4">
+            <span className="h-[5px] w-[5px] rounded-full bg-blue opacity-70" />
+            Step {step.num}
           </div>
-        );
-      })}
+          <h3 className="mb-1 text-[13px] font-semibold text-ink-1">{step.title}</h3>
+          <p className="text-[12px] leading-relaxed text-ink-3">{step.body}</p>
+        </div>
+      ))}
     </div>
   );
 }

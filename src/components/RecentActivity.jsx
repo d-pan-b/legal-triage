@@ -1,65 +1,54 @@
 const ACTIVITIES = [
-  {
-    badge: 'EMERGENCY',
-    badgeClass: 'bg-brand-light text-brand-dark',
-    time: '2 min ago',
-    title: 'Emergency disclosure request',
-    detail: 'SFPD · Routed to Senior Analyst',
-  },
-  {
-    badge: 'ROUTINE',
-    badgeClass: 'bg-success-soft text-success',
-    time: '14 min ago',
-    title: 'ECPA subpoena — subscriber info',
-    detail: 'USAO NDCA · Junior Analyst',
-  },
-  {
-    badge: 'PRIORITY',
-    badgeClass: 'bg-warning-light text-warning-strong',
-    time: '1 hr ago',
-    title: 'Search warrant — content request',
-    detail: 'Travis Co. Sheriff · 3 red flags',
-  },
-  {
-    badge: 'ROUTINE',
-    badgeClass: 'bg-success-soft text-success',
-    time: '2 hr ago',
-    title: 'DMCA takedown subpoena',
-    detail: 'Hartley IP Law · AI drafted',
-  },
-  {
-    badge: 'ROUTINE',
-    badgeClass: 'bg-success-soft text-success',
-    time: '3 hr ago',
-    title: 'Civil subpoena — user records',
-    detail: 'LASC · Junior Analyst',
-  },
+  { tier: 'red',   routing: 'Counsel Only',   time: '2 min ago',  name: 'Emergency disclosure request',    detail: 'SFPD' },
+  { tier: 'amber', routing: 'Senior Analyst',  time: '14 min ago', name: 'ECPA subpoena: subscriber info', detail: 'USAO NDCA' },
+  { tier: 'red',   routing: 'Counsel Only',    time: '1 hr ago',   name: 'Search warrant: content request',detail: 'Travis Co. Sheriff' },
+  { tier: 'blue',  routing: 'Junior Analyst',  time: '2 hr ago',   name: 'DMCA takedown notice',            detail: 'Hartley IP Law' },
+  { tier: 'blue',  routing: 'Junior Analyst',  time: '3 hr ago',   name: 'Civil subpoena: user records',   detail: 'LASC' },
+  { tier: 'green', routing: 'Routed · Complete', time: 'Yesterday', name: 'Preservation request',           detail: 'FBI SF Field Office' },
 ];
+
+const DOT_COLOR = {
+  red:   'bg-red',
+  amber: 'bg-amber',
+  blue:  'bg-blue',
+  green: 'bg-green',
+};
+
+const ROUTING_COLOR = {
+  red:   'text-red-ink',
+  amber: 'text-amber-ink',
+  blue:  'text-blue-ink',
+  green: 'text-green-ink',
+};
 
 export default function RecentActivity() {
   return (
-    <aside className="h-fit overflow-hidden rounded-xl border border-line bg-surface-primary">
-      <div className="flex items-center border-b border-line px-4 py-3.5">
-        <h2 className="text-sm font-medium text-ink-primary">Recent requests</h2>
-        <button type="button" className="ml-auto text-xs text-brand hover:text-brand-dark">
-          View all
-        </button>
+    <aside className="overflow-hidden rounded-xl border border-border bg-surface shadow-md">
+      <div className="flex items-center justify-between border-b border-border-faint bg-gradient-to-b from-surface to-surface-2 px-4 py-3.5">
+        <h2 className="text-[13px] font-semibold text-ink-1">Recent</h2>
+        <span className="rounded-full border border-border bg-surface-3 px-2 py-0.5 font-mono text-[10px] font-semibold text-ink-3">
+          12 this week
+        </span>
       </div>
 
       <ul>
-        {ACTIVITIES.map((item, index) => (
+        {ACTIVITIES.map((item, i) => (
           <li
-            key={item.title}
-            className={`px-4 py-2.5 ${index < ACTIVITIES.length - 1 ? 'border-b border-line' : ''}`}
+            key={item.name}
+            className={`flex cursor-pointer items-start gap-2.5 px-4 py-3 transition-colors hover:bg-surface-2 ${
+              i < ACTIVITIES.length - 1 ? 'border-b border-border-faint' : ''
+            }`}
           >
-            <div className="mb-1 flex items-center justify-between gap-2">
-              <span className={`rounded px-1.5 py-0.5 text-xs font-semibold tracking-wide ${item.badgeClass}`}>
-                {item.badge}
-              </span>
-              <span className="text-xs text-ink-muted">{item.time}</span>
+            <span className={`mt-1 h-2 w-2 shrink-0 rounded-[3px] ${DOT_COLOR[item.tier]}`} />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[12px] font-medium text-ink-1">{item.name}</p>
+              <p className="mt-0.5 font-mono text-[10px] text-ink-4">
+                {item.time} · {item.detail}
+              </p>
+              <p className={`mt-1 text-[10px] font-semibold ${ROUTING_COLOR[item.tier]}`}>
+                {item.routing}
+              </p>
             </div>
-            <p className="text-xs font-medium leading-snug text-ink-primary md:text-sm">{item.title}</p>
-            <p className="mt-0.5 text-xs text-ink-muted">{item.detail}</p>
           </li>
         ))}
       </ul>

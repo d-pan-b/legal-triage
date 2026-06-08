@@ -1,5 +1,4 @@
 import { useCallback, useRef, useState } from 'react';
-import { CloudUpload } from 'lucide-react';
 
 const ACCEPTED = '.pdf,.docx,.txt';
 const ACCEPTED_MIME = [
@@ -7,8 +6,6 @@ const ACCEPTED_MIME = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'text/plain',
 ];
-
-const FORMAT_BADGES = ['PDF', 'DOCX', 'TXT'];
 
 function isAccepted(file) {
   const ext = file.name.split('.').pop()?.toLowerCase();
@@ -27,6 +24,10 @@ export default function UploadZone({ fileName, onFileSelect, disabled }) {
         setError('Please upload a .pdf, .docx, or .txt file.');
         return;
       }
+      if (file.size > 20 * 1024 * 1024) {
+        setError('File exceeds the 20 MB limit. Please upload a smaller file.');
+        return;
+      }
       setError('');
       onFileSelect(file);
     },
@@ -43,15 +44,8 @@ export default function UploadZone({ fileName, onFileSelect, disabled }) {
     [disabled, handleFile]
   );
 
-  const onDragOver = (e) => {
-    e.preventDefault();
-    if (!disabled) setDragOver(true);
-  };
-
-  const onDragLeave = () => setDragOver(false);
-
   const openFilePicker = (e) => {
-    e.stopPropagation();
+    e?.stopPropagation();
     if (!disabled) inputRef.current?.click();
   };
 
@@ -60,18 +54,19 @@ export default function UploadZone({ fileName, onFileSelect, disabled }) {
       <div
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') inputRef.current?.click();
-        }}
+        aria-label={fileName ? `Selected file: ${fileName}. Press Enter to change.` : 'Upload a document. Press Enter or Space to browse files.'}
+        aria-disabled={disabled}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') inputRef.current?.click(); }}
         onClick={() => !disabled && !fileName && inputRef.current?.click()}
         onDrop={onDrop}
-        onDragOver={onDragOver}
-        onDragLeave={onDragLeave}
+        onDragOver={(e) => { e.preventDefault(); if (!disabled) setDragOver(true); }}
+        onDragLeave={() => setDragOver(false)}
         className={[
-          'rounded-xl border-2 border-dashed border-brand px-6 py-9 text-center transition-all',
-          dragOver ? 'scale-[1.01] bg-brand-medium-30' : 'bg-brand-light',
-          disabled ? 'pointer-events-none opacity-60' : '',
-          fileName ? 'cursor-default' : 'cursor-pointer',
+          'rounded-lg border-[1.5px] border-dashed px-6 py-9 text-center transition-[border-color,background-color] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue focus-visible:ring-offset-2',
+          dragOver
+            ? 'border-blue bg-blue-bg'
+            : 'border-border-strong bg-surface-2 hover:border-blue hover:bg-blue-bg',
+          disabled ? 'pointer-events-none opacity-60' : 'cursor-pointer',
         ].join(' ')}
       >
         <input
@@ -85,44 +80,53 @@ export default function UploadZone({ fileName, onFileSelect, disabled }) {
 
         {fileName ? (
           <div className="flex flex-col items-center gap-3">
-            <div className="flex size-13 items-center justify-center rounded-full bg-brand">
-              <CloudUpload className="h-6 w-6 text-white" strokeWidth={1.75} />
+            <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-surface shadow-sm">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" strokeWidth="1.5">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="9" y1="13" x2="15" y2="13" />
+                <line x1="9" y1="17" x2="13" y2="17" />
+              </svg>
             </div>
-            <p className="text-base font-medium text-ink-primary">{fileName}</p>
+            <p className="text-[13px] font-semibold text-ink-1">{fileName}</p>
             <button
               type="button"
               onClick={openFilePicker}
-              className="text-sm text-brand hover:text-brand-dark"
+              className="text-[12px] font-medium text-blue hover:text-blue-hover focus-visible:outline-none focus-visible:rounded focus-visible:ring-1 focus-visible:ring-blue"
             >
               Choose a different file
             </button>
           </div>
         ) : (
           <>
-            <div className="mx-auto flex size-13 items-center justify-center rounded-full bg-brand">
-              <CloudUpload className="h-6 w-6 text-white" strokeWidth={1.75} />
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-border bg-surface shadow-sm">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ink-3)" strokeWidth="1.5">
+                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="12" y1="18" x2="12" y2="12" />
+                <line x1="9" y1="15" x2="15" y2="15" />
+              </svg>
             </div>
-            <p className="mt-3.5 text-base font-medium text-ink-primary">Drop your legal document here</p>
-            <p className="mt-1 text-sm text-ink-muted">
-              or{' '}
+            <p className="mt-3.5 text-[14px] font-semibold text-ink-1">
+              Drop a document here, or{' '}
               <span
                 role="button"
                 tabIndex={0}
                 onClick={openFilePicker}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') openFilePicker(e);
-                }}
-                className="cursor-pointer text-brand hover:text-brand-dark"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') openFilePicker(e); }}
+                className="cursor-pointer font-semibold text-blue hover:text-blue-hover focus-visible:outline-none focus-visible:rounded focus-visible:ring-1 focus-visible:ring-blue"
               >
-                click to browse
-              </span>{' '}
-              your files
+                browse files
+              </span>
+            </p>
+            <p className="mt-1.5 text-[12px] text-ink-3">
+              Securely processed. Document stays on your network.
             </p>
             <div className="mt-4 flex flex-wrap justify-center gap-2">
-              {FORMAT_BADGES.map((fmt) => (
+              {['PDF', 'DOCX', 'TXT', 'Up to 20 MB'].map((fmt) => (
                 <span
                   key={fmt}
-                  className="rounded-full border border-brand-medium bg-white px-2.5 py-0.5 text-xs text-brand-dark"
+                  className="rounded border border-border bg-surface px-2 py-0.5 font-mono text-[10px] font-medium text-ink-3"
                 >
                   {fmt}
                 </span>
@@ -132,7 +136,7 @@ export default function UploadZone({ fileName, onFileSelect, disabled }) {
         )}
       </div>
 
-      {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-[12px] text-red-ink" role="alert">{error}</p>}
     </div>
   );
 }

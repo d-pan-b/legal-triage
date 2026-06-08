@@ -1,25 +1,31 @@
-import { ShieldCheck } from 'lucide-react';
-
 export default function ResultsNavBar() {
   return (
-    <header className="flex h-12 shrink-0 items-center gap-3 bg-nav px-4 md:h-14 md:gap-3 md:px-6">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand md:h-8 md:w-8">
-        <ShieldCheck className="h-4 w-4 text-white md:h-[1.1rem] md:w-[1.1rem]" strokeWidth={2} />
+    <header className="flex h-12 shrink-0 items-center gap-3 border-b border-nav-border bg-nav-bg px-5 shadow-[0_1px_0_oklch(0_0_0/0.3),0_2px_8px_oklch(0_0_0/0.18)]">
+      <div className="flex items-center gap-2.5">
+        <div className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-blue to-[oklch(0.38_0.20_270)] shadow-[0_1px_3px_oklch(0_0_0/0.4),inset_0_1px_0_oklch(1_0_0/0.15)]">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M3 4h10M3 8h6M3 12h8" stroke="white" strokeWidth="1.8" strokeLinecap="round" />
+          </svg>
+        </div>
+        <span className="text-sm font-bold tracking-tight text-nav-ink1">Nexus</span>
       </div>
-
-      <span className="text-sm font-medium text-white md:text-base">Nexus</span>
-      <span className="hidden text-xs text-portal-muted sm:block">Legal Triage</span>
+      <div className="h-[18px] w-px bg-nav-border" />
+      <span className="text-xs text-nav-ink2">Legal Request Triage</span>
 
       <nav className="ml-4 hidden items-center gap-2 sm:flex" aria-label="Breadcrumb">
-        <span className="text-xs text-portal-muted">Triage</span>
-        <span className="text-xs text-ink-dim">/</span>
-        <span className="text-xs text-brand">Analysis result</span>
+        <span className="text-xs text-nav-ink2">Triage</span>
+        <span className="text-xs text-[oklch(0.44_0.010_252)]">/</span>
+        <span className="text-xs font-medium text-blue-ink">Preliminary triage result</span>
       </nav>
 
-      <div className="ml-auto flex items-center gap-3">
-        <span className="hidden text-xs text-ink-faint md:block">Analyst</span>
-        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand text-xs font-medium text-white md:h-8 md:w-8">
-          AN
+      <div className="ml-auto flex items-center gap-4">
+        <div className="flex items-center gap-1.5 text-xs text-nav-ink2">
+          <span className="h-1.5 w-1.5 rounded-full bg-[oklch(0.62_0.16_145)] shadow-[0_0_0_2px_oklch(0.62_0.16_145/0.25)]" />
+          API connected
+        </div>
+        <div className="h-[18px] w-px bg-nav-border" />
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[oklch(0.40_0.15_252)] to-[oklch(0.28_0.12_280)] font-mono text-[10px] font-bold text-[oklch(0.88_0.006_252)] shadow-[0_1px_3px_oklch(0_0_0/0.3)] ring-[1.5px] ring-nav-border">
+          DB
         </div>
       </div>
     </header>

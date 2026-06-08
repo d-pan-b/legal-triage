@@ -6,3 +6,8 @@ dist
 .vercel
 *.log
 .DS_Store
+
+# Claude
+.claude-handoffs/
+.claude/
+.impeccable/

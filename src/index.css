@@ -2,59 +2,122 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Routing gate entrance / exit ── */
+.routing-gate {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 180ms ease-out, transform 180ms ease-out;
+}
+.routing-gate[data-closing='true'] {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+  transition: opacity 150ms ease-in, transform 150ms ease-in;
+}
+@starting-style {
+  .routing-gate {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+.routing-receipt {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+@starting-style {
+  .routing-receipt {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .routing-gate,
+  .routing-receipt {
+    transition: none;
+  }
+  /* Suppress spinner spin — a static ring is still a meaningful loading indicator */
+  .animate-spin {
+    animation: none;
+  }
+}
+
 @layer base {
   html {
-    font-size: clamp(13px, 1.1vw, 17px);
+    font-size: clamp(13px, 1.05vw, 16px);
   }
 
   :root {
-    --brand: #f26522;
-    --brand-dark: #c44e10;
-    --brand-light: #fef0e8;
-    --brand-mid: #fad5be;
-    --portal-surface: #f5f5f3;
-    --portal-nav: #1a1a1a;
-    --portal-ribbon: #111111;
-    --portal-border: #333333;
-    --portal-muted: #666666;
-    --portal-stat-green: #9fe1cb;
-    --portal-stat-warn: #fac775;
-    --color-background-primary: #ffffff;
-    --color-background-secondary: #f5f5f3;
-    --color-text-primary: #1a1a1a;
-    --color-text-secondary: #666666;
-    --color-text-muted: #888888;
-    --color-text-faint: #aaaaaa;
-    --color-text-dim: #444444;
-    --color-footer-text: #555555;
-    --color-nav-bg: #1a1a1a;
-    --color-border-tertiary: #e5e5e5;
-    --color-border-secondary: #d4d4d4;
-    --color-success: #166534;
-    --color-success-bg: #f0fdf4;
-    --color-success-bg-alt: #e8f5e9;
-    --color-warning: #b45309;
-    --color-warning-bg: #fff8e1;
-    --color-warning-strong: #e65100;
-    --color-warn-border: #fde68a;
-    --color-warn-text: #92400e;
-    --color-danger: #991b1b;
-    --color-danger-bg: #fef2f2;
-    --color-danger-text-dark: #7f1d1d;
-    --color-danger-border: #dc2626;
-    --color-civil-bg: #eef2ff;
-    --color-civil-text: #3730a3;
-    --color-dmca-bg: #fef9c3;
-    --color-dmca-text: #854d0e;
-    --color-fisa-bg: #fdf2f8;
-    --color-fisa-text: #9d174d;
-    --color-junior-bg: #eff6ff;
-    --color-junior-text: #1d4ed8;
+    /* ── Canvas & surfaces ── */
+    --canvas:         oklch(0.922 0.014 252);   /* deeper — cards now visibly lift off */
+    --surface:        oklch(1.0 0 0);
+    --surface-2:      oklch(0.968 0.012 252);
+    --surface-3:      oklch(0.942 0.016 252);
+
+    /* ── Borders ── */
+    --border-faint:   oklch(0.895 0.013 252);
+    --border:         oklch(0.836 0.016 252);
+    --border-strong:  oklch(0.715 0.020 252);
+
+    /* ── Ink / text ── */
+    --ink-1:          oklch(0.13 0.014 252);
+    --ink-2:          oklch(0.35 0.011 252);
+    --ink-3:          oklch(0.44 0.010 252);    /* was 0.52 — now ≥4.5:1 on tinted surfaces */
+    --ink-4:          oklch(0.52 0.009 252);    /* was 0.68 — was 2.4:1 on white, now ≥4.6:1 */
+
+    /* ── Navigation ── */
+    --nav-bg:         oklch(0.14 0.018 252);
+    --nav-border:     oklch(0.24 0.016 252);
+    --nav-ink-1:      oklch(0.95 0.004 252);
+    --nav-ink-2:      oklch(0.62 0.008 252);
+
+    /* ── Blue — neutral routing / junior ── */
+    --blue:           oklch(0.48 0.18 252);
+    --blue-hover:     oklch(0.42 0.18 252);
+    --blue-bg:        oklch(0.948 0.050 252);   /* was 0.970 0.018 — now clearly tinted */
+    --blue-bg-mid:    oklch(0.910 0.084 252);   /* was 0.940 0.038 */
+    --blue-border:    oklch(0.740 0.118 252);   /* was 0.800 0.070 — stronger */
+    --blue-ink:       oklch(0.26 0.158 252);    /* was 0.32 — darker for AA on tinted bg */
+
+    /* ── Red — critical / counsel only ── */
+    --red:            oklch(0.46 0.20 22);
+    --red-hover:      oklch(0.40 0.20 22);
+    --red-bg:         oklch(0.948 0.054 18);    /* was 0.975 0.018 — now clearly pink */
+    --red-bg-mid:     oklch(0.906 0.092 18);    /* was 0.945 0.040 */
+    --red-border:     oklch(0.732 0.138 18);    /* was 0.800 0.085 */
+    --red-ink:        oklch(0.25 0.168 18);     /* was 0.30 */
+
+    /* ── Amber — review / senior analyst ── */
+    --amber:          oklch(0.57 0.135 68);
+    --amber-hover:    oklch(0.50 0.135 68);
+    --amber-bg:       oklch(0.948 0.058 76);    /* was 0.975 0.020 — now clearly amber */
+    --amber-bg-mid:   oklch(0.906 0.100 76);    /* was 0.945 0.048 */
+    --amber-border:   oklch(0.776 0.118 76);    /* was 0.840 0.075 */
+    --amber-ink:      oklch(0.30 0.128 55);     /* was 0.36 — darker for AA */
+
+    /* ── Green — complete / no flags ── */
+    --green:          oklch(0.50 0.13 145);
+    --green-bg:       oklch(0.948 0.052 145);   /* was 0.975 0.016 — now clearly green */
+    --green-border:   oklch(0.730 0.102 145);   /* was 0.820 0.065 */
+    --green-ink:      oklch(0.25 0.122 145);    /* was 0.32 */
+
+    /* ── Shadows — stronger to show card lift on darker canvas ── */
+    --shadow-sm:  0 1px 2px oklch(0 0 0 / 0.08), 0 1px 4px oklch(0 0 0 / 0.06);
+    --shadow-md:  0 2px 4px oklch(0 0 0 / 0.10), 0 4px 14px oklch(0 0 0 / 0.08);
+    --shadow-lg:  0 4px 8px oklch(0 0 0 / 0.11), 0 8px 24px oklch(0 0 0 / 0.10);
+  }
+
+  /* Consistent keyboard focus ring across all interactive elements */
+  :focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 2px;
   }
 
   body {
-    background-color: var(--portal-surface);
-    color: var(--color-text-primary);
+    background-color: var(--canvas);
+    color: var(--ink-1);
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
